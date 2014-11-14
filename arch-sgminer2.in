@@ -1,0 +1,114 @@
+#!/bin/bash
+#setting strings and functions
+next=3
+_black () {
+	tput setaf 0
+}
+_red () {
+	tput setaf 1
+}
+_green() {
+	tput setaf 2
+}
+_yellow() {
+	tput setaf 3
+}
+_blue() {
+	tput setaf 4
+}
+_magenta() {
+	tput setaf 5
+}
+_cyan() {
+	tput setaf 6
+}
+_white() {
+	tput setaf 7
+}
+_bold() {
+	tput bold
+}
+_tset() {
+	tput sgr 0
+}
+nscript="$(_green)\'arch-sgminer$next.in\'$(_blue)"
+_rebooty () {
+	_green
+	read -p "======================================================================
+You need to reboot before continuing. Reboot and then run $nscript.
+	Reboot now? [y/N]: " reboot
+		case $reboot in
+			y|Y)
+				echo "Rebooting now."
+				sudo reboot
+				;;
+			*)
+				echo "Reboot before running $nscript."
+				;;
+		esac
+	_tset
+}
+_echecho () {
+	echo -e "\e[0;34m======================================================================
+$1..."
+_tset
+}
+_darkcoinascii () {
+	echo -e "\e[0;34m$1"
+	sleep 0.1
+}
+
+##starting script
+#darkcoin ascii
+{
+	_darkcoinascii '    \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
+	_darkcoinascii '      \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
+	_darkcoinascii '        \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
+	_darkcoinascii '          \\\\\\\\\\\\\\\\\\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
+	_darkcoinascii '\\\\\\\\\\\\\\\\\\   \\\\\\\\\\\\\\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
+	_darkcoinascii '  \\\\\\\\\\\\\\\\\\   \\\\\\\\\\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
+	_darkcoinascii '    \\\\\\\\\\\\\\\\\\   \\\\\\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
+	_darkcoinascii '      \\\\\\\\\\\\\\\\\\   \\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
+	_darkcoinascii '        \\\\\\\\\\\\\\\\\\   \\\\\\                                  \\\\\\\\\\\\\\\\'
+	_darkcoinascii '          \\\\\\\\\\\\\\\\\\   \\                                  \\\\\\\\\\\\\\\\'
+	_darkcoinascii '            \\\\\\\\\\\\\\\\\\                                    \\\\\\\\\\\\\\\\'
+	_darkcoinascii '              \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
+	_darkcoinascii '                \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
+	_darkcoinascii '                  \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
+}
+_echecho "Installing AMD APP SDK version 2.9"
+_blue
+read -p "1) AUR
+2) Source
+	Install through AUR or from source? [1/2] " liaison
+case $liaison in 
+	[1] | [aA] | [aA][uU][rR] )
+		yaourt -Sa amdapp-sdk
+		_rebooty
+		;;
+	[2] | [sS] | [sS][oO][uU][rR][cC][eE] )
+		cd /tmp
+		curl -o amd-app-sdk.tgz http://blog.truepps.com/downloads/AMD/AMD-APP-SDK-v2.9-lnx64.tgz
+		sudo mkdir amd-app-sdk
+		sudo mv amd-app-sdk.tgz amd-app-sdk
+		cd amd-app-sdk
+		sudo tar -zxvf amd-app-sdk.tgz
+		sudo tar -zxvf AMD-APP-SDK-v2.9-RC-lnx64.tgz
+		cd AMD-APP-SDK-v2.9-RC-lnx64
+		sudo cp -pv lib/x86_64/* /usr/lib/
+		sudo rsync -avl include/CL/ /usr/include/CL/
+		cd ..
+		sudo tar -zxvf icd-registration.tgz
+		sudo rsync -avl etc/OpenCL/ /etc/OpenCL/
+		sudo ldconfig
+
+		read -p "========================================
+		Now run this command:
+			$(_green)'sudo sh /tmp/amd-app-sdk/Install-AMD-APP.sh'$(_blue)
+		Then reboot before running $nscript.
+				Press [ENTER] to continue: " go
+		_green
+		echo "sudo sh /tmp/amd-app-sdk/Install-AMD-APP.sh"
+		_blue
+		;;
+esac
