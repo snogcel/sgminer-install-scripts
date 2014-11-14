@@ -1,0 +1,127 @@
+#!/bin/bash
+#setting strings and functions
+next=5
+_black () {
+	tput setaf 0
+}
+_red () {
+	tput setaf 1
+}
+_green() {
+	tput setaf 2
+}
+_yellow() {
+	tput setaf 3
+}
+_blue() {
+	tput setaf 4
+}
+_magenta() {
+	tput setaf 5
+}
+_cyan() {
+	tput setaf 6
+}
+_white() {
+	tput setaf 7
+}
+_bold() {
+	tput bold
+}
+_tset() {
+	tput sgr 0
+}
+nscript="$(_green)\'sgminer$next.in\'$(_blue)"
+_rebooty () {
+	_green
+	read -p "======================================================================
+You need to reboot before continuing. Reboot and then run $nscript.
+	Reboot now? [y/N]: " reboot
+		case $reboot in
+			y|Y)
+				echo "Rebooting now."
+				sudo reboot
+				;;
+			*)
+				echo "Reboot before running $nscript."
+				;;
+		esac
+	_tset
+}
+_echecho () {
+	echo -e "\e[0;34m======================================================================
+$1..."
+_tset
+}
+_darkcoinascii () {
+	echo -e "\e[0;34m$1"
+	sleep 0.1
+}
+
+##starting script
+#darkcoin ascii
+{
+	_darkcoinascii '    \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
+	_darkcoinascii '      \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
+	_darkcoinascii '        \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
+	_darkcoinascii '          \\\\\\\\\\\\\\\\\\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
+	_darkcoinascii '\\\\\\\\\\\\\\\\\\   \\\\\\\\\\\\\\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
+	_darkcoinascii '  \\\\\\\\\\\\\\\\\\   \\\\\\\\\\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
+	_darkcoinascii '    \\\\\\\\\\\\\\\\\\   \\\\\\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
+	_darkcoinascii '      \\\\\\\\\\\\\\\\\\   \\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
+	_darkcoinascii '        \\\\\\\\\\\\\\\\\\   \\\\\\                                  \\\\\\\\\\\\\\\\'
+	_darkcoinascii '          \\\\\\\\\\\\\\\\\\   \\                                  \\\\\\\\\\\\\\\\'
+	_darkcoinascii '            \\\\\\\\\\\\\\\\\\                                    \\\\\\\\\\\\\\\\'
+	_darkcoinascii '              \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
+	_darkcoinascii '                \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
+	_darkcoinascii '                  \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
+}
+
+{
+	_echecho "Downloading sgminer"
+	cd ~/
+	git clone https://github.com/sgminer-dev/sgminer.git
+}
+{
+	_echecho "Moving AMD ADL SDK files into sgminer directory"
+	cd ~/Downloads
+	curl -o adl_sdk.zip http://blog.truepps.com/downloads/AMD/ADL_SDK_6.0.zip
+	mkdir adl_sdk
+	mv adl_sdk.zip adl_sdk
+	cd adl_sdk
+	unzip adl_sdk.zip
+	cp ~/Downloads/adl_sdk/include/* ~/sgminer/ADL_SDK
+	cd ~/
+}
+{
+	_echecho "Installing sgminer..."
+	cd ~/sgminer
+	git submodule init
+	git submodule update
+	autoreconf -i
+	CFLAGS="-O2 -Wall -march=native" ./configure
+	make
+	sudo make install
+}
+{
+	sgminer -n
+	_blue
+	read -p "Did sgminer detect your GPU in the line above? [y/N]:" gpu
+	case $gpu in
+		y|Y)
+			echo "Awesome."
+			_rebooty
+			;;
+		*)
+			sudo aticonfig --adapter=all --initial
+			read -p "Reboot and then run 'sgminer -n'. If it detects your GPU after rebooting, then run $nscript. If sgminer STILL doesn't detect your GPU, you'll have to search Google to figure out why sgminer hates you. :(
+	Reboot now? [y/N]: " reboot
+			case $reboot in
+				y|Y)
+					sudo reboot
+					;;
+				*)
+					read "Reboot and then run 'sgminer -n'. If it detects your GPU after rebooting, then run $nscript."
+					;;
+			esac
+	esac

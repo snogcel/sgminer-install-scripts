@@ -1,0 +1,114 @@
+#!/bin/bash
+#setting strings and functions
+next=2
+_black () {
+	tput setaf 0
+}
+_red () {
+	tput setaf 1
+}
+_green() {
+	tput setaf 2
+}
+_yellow() {
+	tput setaf 3
+}
+_blue() {
+	tput setaf 4
+}
+_magenta() {
+	tput setaf 5
+}
+_cyan() {
+	tput setaf 6
+}
+_white() {
+	tput setaf 7
+}
+_bold() {
+	tput bold
+}
+_tset() {
+	tput sgr 0
+}
+nscript="$(_green)\'sgminer$next.in\'$(_blue)"
+_rebooty () {
+	_green
+	read -p "======================================================================
+You need to reboot before continuing. Reboot and then run $nscript.
+	Reboot now? [y/N]: " reboot
+		case $reboot in
+			y|Y)
+				echo "Rebooting now."
+				sudo reboot
+				;;
+			*)
+				echo "Reboot before running $nscript."
+				;;
+		esac
+	_tset
+}
+_echecho () {
+	echo -e "\e[0;34m======================================================================
+$1..."
+_tset
+}
+_darkcoinascii () {
+	echo -e "\e[0;34m$1"
+	sleep 0.1
+}
+
+##starting script
+#darkcoin ascii
+{
+	_darkcoinascii '    \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
+	_darkcoinascii '      \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
+	_darkcoinascii '        \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
+	_darkcoinascii '          \\\\\\\\\\\\\\\\\\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
+	_darkcoinascii '\\\\\\\\\\\\\\\\\\   \\\\\\\\\\\\\\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
+	_darkcoinascii '  \\\\\\\\\\\\\\\\\\   \\\\\\\\\\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
+	_darkcoinascii '    \\\\\\\\\\\\\\\\\\   \\\\\\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
+	_darkcoinascii '      \\\\\\\\\\\\\\\\\\   \\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
+	_darkcoinascii '        \\\\\\\\\\\\\\\\\\   \\\\\\                                  \\\\\\\\\\\\\\\\'
+	_darkcoinascii '          \\\\\\\\\\\\\\\\\\   \\                                  \\\\\\\\\\\\\\\\'
+	_darkcoinascii '            \\\\\\\\\\\\\\\\\\                                    \\\\\\\\\\\\\\\\'
+	_darkcoinascii '              \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
+	_darkcoinascii '                \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
+	_darkcoinascii '                  \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
+}
+#Making sure scripts are under the default (~) directory.
+{
+	if [[ $PWD != $HOME ]] ; then
+		for n in 1 2 3 4 5 ; do
+			mv "sgminer$n.in" ~
+		done
+	fi
+}
+{
+	_echecho "Updating"
+	sudo apt-get install aptitude
+	sudo aptitude update
+	sudo aptitude upgrade -yr
+}
+{
+	_echecho "Installing Dependencies"
+	sudo aptitude install -yr git curl unzip automake autogen yasm autoconf dh-autoreconf build-essential pkg-config openssh-server screen libtool libcurl4-openssl-dev libtool libncurses5-dev libudev-dev xserver-xorg-core xserver-xorg-video-ati gdebi gedit execstack dh-modaliases lib32gcc1 dkms
+}
+{
+	_echecho "Checking current video driver"
+	sudo fglrxinfo
+	if [[ $? =~ "command not found" ]] ; then
+		_green
+		echo "Correct driver installed. Awesome."
+		_tset
+	else
+	    sudo sh /usr/share/ati/fglrx-uninstall.sh
+	    sudo aptitude purge fglrx fglrx_* fglrx-amdcccle* fglrx-dev* xorg-driver-fglrx
+		sudo rm /etc/X11/xorg.conf
+		sudo aptitude reinstall -yr xserver-xorg-core
+		sudo dpkg-reconfigure xserver-xorg
+		sudo aptitude update
+		sudo aptitude upgrade -yr
+	fi
+}
+_rebooty
