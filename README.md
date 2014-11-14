@@ -23,5 +23,5 @@ rm -df sgminer-install-scripts
 ```
   
 More detailed instructions under these guides:  
-https://darkcointalk.org/threads/noob-proof-how-to-install-sgminer-amd-drivers-and-gpu-mine-darkcoin-under-linux-ubuntu-64-bit.1813/
+https://darkcointalk.org/threads/noob-proof-how-to-install-sgminer-amd-drivers-and-gpu-mine-darkcoin-under-linux-ubuntu-64-bit.1813/  
 http://ubuntuforums.org/showthread.php?t=2243387&p=13117766
