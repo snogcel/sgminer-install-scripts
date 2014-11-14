@@ -1,0 +1,110 @@
+#!/bin/bash
+_bk() {
+	tput setaf 0
+}
+_r() {
+	tput setaf 1
+}
+_g() {
+	tput setaf 2
+}
+_bu() {
+	tput setaf 4
+}
+_bd() {
+	tput bold
+}
+_n() {
+	tput sgr 0
+}
+_echecho () {
+	echo -e "\e[0;34m======================================================================
+$1..."
+_tset
+}
+_darkcoinascii () {
+	echo -e "\e[0;34m$1"
+	sleep 0.1
+}
+_pacman() {
+	if [[ -z $(ls /bin | grep $1) ]] ; then
+		if [[ -z $2 ]] ; then
+			pkg=$1
+		else
+			pkg=$2
+		fi
+		sudo pacman -S $pkg
+	fi
+_buntuman() {
+	if [[ -z $(ls /bin | grep $1) ]] ; then
+		if [[ -z $2 ]] ; then
+			pkg=$1
+		else
+			pkg=$2
+		fi
+		sudo apt-get install -yr $pkg
+	fi
+}
+_darkclone() {
+	case $1 in 
+		Arch)
+			dabv="arch-sgminer"
+			_pacman git
+			;;
+		Ubuntu)
+			dabv="sgminer"
+			_buntuman git
+			;;
+	esac
+	cd ~
+	git clone https://github.com/GreenRaccoon23/sgminer-install-scripts
+	cd sgminer-install-scripts
+	mv sgminer-install-scripts/${dabv}*.in .
+	chmod +x *.in
+	rm -df sgminer-install-scripts
+}
+
+##starting script
+#darkcoin ascii
+{
+	_darkcoinascii '    \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
+	_darkcoinascii '      \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
+	_darkcoinascii '        \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
+	_darkcoinascii '          \\\\\\\\\\\\\\\\\\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
+	_darkcoinascii '\\\\\\\\\\\\\\\\\\   \\\\\\\\\\\\\\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
+	_darkcoinascii '  \\\\\\\\\\\\\\\\\\   \\\\\\\\\\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
+	_darkcoinascii '    \\\\\\\\\\\\\\\\\\   \\\\\\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
+	_darkcoinascii '      \\\\\\\\\\\\\\\\\\   \\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
+	_darkcoinascii '        \\\\\\\\\\\\\\\\\\   \\\\\\                                  \\\\\\\\\\\\\\\\'
+	_darkcoinascii '          \\\\\\\\\\\\\\\\\\   \\                                  \\\\\\\\\\\\\\\\'
+	_darkcoinascii '            \\\\\\\\\\\\\\\\\\                                    \\\\\\\\\\\\\\\\'
+	_darkcoinascii '              \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
+	_darkcoinascii '                \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
+	_darkcoinascii '                  \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
+}
+_pacman "lsb_release" "lsb-release"
+if [[ -z $(ls /bin | grep lsb_release) ]] ; then
+	sudo pacman -S lsb-release
+fi
+distro=$(lsb_release -a | grep "Distributor ID" | sed 's|Distributor ID\:\s||')
+_bu
+echo "Distribution is $distro"
+case $distro in
+	Arch*)
+		_darkclone Arch
+		;;
+	*buntu*|*Mint*)
+		_darkclone Ubuntu
+		;;
+	*)
+		echo "Can't figure out what distro you're running. Select one of the following two choices:
+	1) $(_g)Arch Linux$(_bu)
+	2) $(_g)Ubuntu/Xubuntu/Linux Mint$(_bu)"
+		read -p "	==> Select (1/2): " choice
+		case $choice in 
+			1) _darkclone Arch ;;
+			2) _darkclone Ubuntu ;;
+		esac
+		;;	
+esac
+_n
