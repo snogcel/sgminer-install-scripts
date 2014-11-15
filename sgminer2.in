@@ -38,8 +38,8 @@ _tset() {
 nscript="$(_green)\'sgminer$next.in\'$(_blue)"
 _rebooty () {
 	_green
-	read -p "====================================================================================================
-You need to reboot before continuing. Reboot and then run $nscript.
+	printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' =
+	echo "You need to reboot before continuing. Reboot and then run $nscript.
 	Reboot now? [y/N]: " reboot
 		case $reboot in
 			y|Y)
@@ -53,9 +53,10 @@ You need to reboot before continuing. Reboot and then run $nscript.
 	_tset
 }
 _echecho () {
-	echo -e "\e[0;34m======================================================================
-$1..."
-_tset
+	_blue
+	printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' =
+	echo -e "$1..."
+	_tset
 }
 _darkcoinascii () {
 	echo -e "\e[0;34m$1"
@@ -99,11 +100,11 @@ _darkcoinascii () {
 	echo '****************************** READ THIS ***********************************'
 	_tset
 	_blue
-	read -p "-Before you hit [ENTER] to continue, read the 7 steps below. They'll tell you what you're supposed to do.
-----------------------------------------------------------------------
--If errors occur when the application launches, run 'sudo gedit /usr/share/ati/fglrx-install.log' and then follow the instructions on that document. It'll tell you to install some dependencies/packages ('sudo apt-get install ...'
-----------------------------------------------------------------------
--If there are NOT any errors, you'll see a a screen with the two options 'Install Driver 14.20...'' or 'Generate Distribution Specific Driver Package'.
+	echo "-Before you hit [ENTER] to continue, read the 7 steps below. They'll tell you what you're supposed to do."
+	printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' -
+	echo "-If errors occur when the application launches, run 'sudo gedit /usr/share/ati/fglrx-install.log' and then follow the instructions on that document. It'll tell you to install some dependencies/packages ('sudo apt-get install ...'"
+	printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' -
+	read -p "-If there are NOT any errors, you'll see a a screen with the two options 'Install Driver 14.20...'' or 'Generate Distribution Specific Driver Package'.
 1-First, choose $(_green)'Generate Distribution Specific Driver Package'$(_blue) and click $(_green)'Continue'$(_blue).
 2-Next, choose $(_green)'I agree'$(_blue) (if you agree).
 3-Next, scroll down and choose $(_green)'Build package for detected OS: Ubuntu/trusty'$(_blue), then click $(_green)'Continue'$(_blue).

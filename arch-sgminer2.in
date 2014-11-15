@@ -38,8 +38,8 @@ _tset() {
 nscript="$(_green)\'arch-sgminer$next.in\'$(_blue)"
 _rebooty () {
 	_green
-	read -p "======================================================================
-You need to reboot before continuing. Reboot and then run $nscript.
+	printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' =
+	echo "You need to reboot before continuing. Reboot and then run $nscript.
 	Reboot now? [y/N]: " reboot
 		case $reboot in
 			y|Y)
@@ -53,9 +53,10 @@ You need to reboot before continuing. Reboot and then run $nscript.
 	_tset
 }
 _echecho () {
-	echo -e "\e[0;34m======================================================================
-$1..."
-_tset
+	_blue
+	printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' =
+	echo -e "$1..."
+	_tset
 }
 _darkcoinascii () {
 	echo -e "\e[0;34m$1"
@@ -107,14 +108,6 @@ case $liaison in
 		sudo ldconfig
 		sudo perl default-install_lnx_64.pl 2>&1 | tee -a ~/arch-sgminer3-opencl.log
 		sudo aticonfig --adapter=all --initial
-
-		read -p "========================================
-		Now run this command:
-			$(_green)'sudo sh /tmp/amd-app-sdk/Install-AMD-APP.sh'$(_blue)
-		Then reboot before running $nscript.
-				Press [ENTER] to continue: " go
-		_green
-		echo "sudo sh /tmp/amd-app-sdk/Install-AMD-APP.sh"
-		_blue
+		_rebooty
 		;;
 esac
