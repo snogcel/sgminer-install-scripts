@@ -1,4 +1,8 @@
 #!/bin/bash
+##More detailed instructions under these guides:  
+##https://darkcointalk.org/threads/noob-proof-how-to-install-sgminer-amd-drivers-and-gpu-mine-darkcoin-under-linux-ubuntu-64-bit.1813/  
+##http://ubuntuforums.org/showthread.php?t=2243387&p=13117766
+
 #setting strings and functions
 next=3
 _black () {
@@ -101,6 +105,8 @@ case $liaison in
 		sudo tar -zxvf icd-registration.tgz
 		sudo rsync -avl etc/OpenCL/ /etc/OpenCL/
 		sudo ldconfig
+		sudo perl default-install_lnx_64.pl 2>&1 | tee -a ~/arch-sgminer3-opencl.log
+		sudo aticonfig --adapter=all --initial
 
 		read -p "========================================
 		Now run this command:

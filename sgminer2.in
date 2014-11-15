@@ -1,4 +1,8 @@
 #!/bin/bash
+##More detailed instructions under these guides:  
+##https://darkcointalk.org/threads/noob-proof-how-to-install-sgminer-amd-drivers-and-gpu-mine-darkcoin-under-linux-ubuntu-64-bit.1813/  
+##http://ubuntuforums.org/showthread.php?t=2243387&p=13117766
+
 #setting strings and functions
 next=3
 _black () {
@@ -79,7 +83,9 @@ _darkcoinascii () {
 {
 	_echecho "Downloading AMD driver packages"
 	cd ~/Downloads
-	curl -o driver.zip http://www2.ati.com/drivers/linux/amd-catalyst-14-9-linux-x86-x86-64.zip --referer http://support.amd.com/en-us/kb-articles/Pages/Catalyst-Linux-Installer-Notes.aspx
+	if [[ ! -e driver.zip ]] ; then
+		curl -o driver.zip http://www2.ati.com/drivers/linux/amd-catalyst-14-9-linux-x86-x86-64.zip --referer http://support.amd.com/en-us/kb-articles/Pages/Catalyst-Linux-Installer-Notes.aspx
+	fi
 }
 {
 	_echecho "Unpacking driver installation application"
