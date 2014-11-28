@@ -1,31 +1,32 @@
 #!/bin/bash
-_bk() {
-	tput setaf 0
-}
-_r() {
-	tput setaf 1
-}
-_g() {
+####################Define functions.####################
+##Functions to set terminal font colors.##
+_green() {
 	tput setaf 2
 }
-_bu() {
+_blue() {
 	tput setaf 4
 }
-_bd() {
-	tput bold
-}
-_n() {
+#Function to reset to default color.
+_tset() {
 	tput sgr 0
 }
+
+##Other functions.##
+#Function to echo [message] in blue.
 _echecho () {
-	echo -e "\e[0;34m======================================================================
-$1..."
-_tset
+	_blue
+	printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' =
+	echo -e "$1..."
+	_tset
 }
+#Function to show ascii splash image in blue.
 _darkcoinascii () {
 	echo -e "\e[0;34m$1"
 	sleep 0.1
 }
+#Function to check if a package is installed,
+#and if not, install it with 'pacman'.
 _pacman() {
 	if [[ -z $(ls /bin | grep $1) ]] ; then
 		if [[ -z $2 ]] ; then
@@ -35,6 +36,9 @@ _pacman() {
 		fi
 		sudo pacman -S $pkg
 	fi
+}
+#Function to check if a package is installed,
+#and if not, install it with 'apt-get'.
 _buntuman() {
 	if [[ -z $(ls /bin | grep $1) ]] ; then
 		if [[ -z $2 ]] ; then
@@ -45,6 +49,9 @@ _buntuman() {
 		sudo apt-get install -yr $pkg
 	fi
 }
+#Function to download scripts for the local distribution,
+#place them in the $HOME directory,
+#and make them executable.
 _darkclone() {
 	case $1 in 
 		Arch)
@@ -63,32 +70,36 @@ _darkclone() {
 	chmod +x *.in
 	rm -df sgminer-install-scripts
 }
+####################Start script.####################
+#Print Darkcoin ascii.
+_darkcoinascii '    \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
+_darkcoinascii '      \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
+_darkcoinascii '        \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
+_darkcoinascii '          \\\\\\\\\\\\\\\\\\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
+_darkcoinascii '\\\\\\\\\\\\\\\\\\   \\\\\\\\\\\\\\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
+_darkcoinascii '  \\\\\\\\\\\\\\\\\\   \\\\\\\\\\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
+_darkcoinascii '    \\\\\\\\\\\\\\\\\\   \\\\\\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
+_darkcoinascii '      \\\\\\\\\\\\\\\\\\   \\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
+_darkcoinascii '        \\\\\\\\\\\\\\\\\\   \\\\\\                                  \\\\\\\\\\\\\\\\'
+_darkcoinascii '          \\\\\\\\\\\\\\\\\\   \\                                  \\\\\\\\\\\\\\\\'
+_darkcoinascii '            \\\\\\\\\\\\\\\\\\                                    \\\\\\\\\\\\\\\\'
+_darkcoinascii '              \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
+_darkcoinascii '                \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
+_darkcoinascii '                  \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
 
-##starting script
-#darkcoin ascii
-{
-	_darkcoinascii '    \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
-	_darkcoinascii '      \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
-	_darkcoinascii '        \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
-	_darkcoinascii '          \\\\\\\\\\\\\\\\\\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
-	_darkcoinascii '\\\\\\\\\\\\\\\\\\   \\\\\\\\\\\\\\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
-	_darkcoinascii '  \\\\\\\\\\\\\\\\\\   \\\\\\\\\\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
-	_darkcoinascii '    \\\\\\\\\\\\\\\\\\   \\\\\\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
-	_darkcoinascii '      \\\\\\\\\\\\\\\\\\   \\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
-	_darkcoinascii '        \\\\\\\\\\\\\\\\\\   \\\\\\                                  \\\\\\\\\\\\\\\\'
-	_darkcoinascii '          \\\\\\\\\\\\\\\\\\   \\                                  \\\\\\\\\\\\\\\\'
-	_darkcoinascii '            \\\\\\\\\\\\\\\\\\                                    \\\\\\\\\\\\\\\\'
-	_darkcoinascii '              \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
-	_darkcoinascii '                \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
-	_darkcoinascii '                  \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
-}
+#Check if package 'lsb_release' is installed,
+#and if not, install it. (This should only apply to Arch Linux systems.)
 _pacman "lsb_release" "lsb-release"
 if [[ -z $(ls /bin | grep lsb_release) ]] ; then
 	sudo pacman -S lsb-release
 fi
+
+#Find name of local distribution and set it as string $distro.
 distro=$(lsb_release -a | grep "Distributor ID" | sed 's|Distributor ID\:\s||')
-_bu
+_blue
 echo "Distribution is $distro"
+
+#Download scripts for the local distribtion.
 case $distro in
 	Arch*)
 		_darkclone Arch
@@ -98,8 +109,8 @@ case $distro in
 		;;
 	*)
 		echo "Can't figure out what distro you're running. Select one of the following two choices:
-	1) $(_g)Arch Linux$(_bu)
-	2) $(_g)Ubuntu/Xubuntu/Linux Mint$(_bu)"
+	1) $(_green)Arch Linux$(_blue)
+	2) $(_green)Ubuntu/Xubuntu/Linux Mint$(_blue)"
 		read -p "	==> Select (1/2): " choice
 		case $choice in 
 			1) _darkclone Arch ;;
@@ -107,4 +118,4 @@ case $distro in
 		esac
 		;;	
 esac
-_n
+_tset

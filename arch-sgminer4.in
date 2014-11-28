@@ -3,8 +3,8 @@
 ##https://darkcointalk.org/threads/noob-proof-how-to-install-sgminer-amd-drivers-and-gpu-mine-darkcoin-under-linux-ubuntu-64-bit.1813/  
 ##http://ubuntuforums.org/showthread.php?t=2243387&p=13117766
 
-#setting strings and functions
-#next=5
+####################Define functions and set variables.####################
+##Functions to set terminal font colors.##
 _black () {
 	tput setaf 0
 }
@@ -14,28 +14,16 @@ _red () {
 _green() {
 	tput setaf 2
 }
-_yellow() {
-	tput setaf 3
-}
 _blue() {
 	tput setaf 4
 }
-_magenta() {
-	tput setaf 5
-}
-_cyan() {
-	tput setaf 6
-}
-_white() {
-	tput setaf 7
-}
-_bold() {
-	tput bold
-}
+#Function to reset to default color.
 _tset() {
 	tput sgr 0
 }
+#Set variable for the NAME of the script to run after this one.
 nscript="$(_green)\'arch-sgminer$next.in\'$(_blue)"
+#Function to prompt to reboot.
 _rebooty () {
 	_green
 	printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' =
@@ -52,109 +40,120 @@ _rebooty () {
 		esac
 	_tset
 }
+#Function to echo [message] in blue.
 _echecho () {
 	_blue
 	printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' =
 	echo -e "$1..."
 	_tset
 }
+##Function to show ascii splash image in blue.
 _darkcoinascii () {
 	echo -e "\e[0;34m$1"
 	sleep 0.1
 }
 
-##starting script
-#darkcoin ascii
+####################Start script.####################
+#Print Darkcoin ascii.
+
+_darkcoinascii '    \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
+_darkcoinascii '      \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
+_darkcoinascii '        \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
+_darkcoinascii '          \\\\\\\\\\\\\\\\\\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
+_darkcoinascii '\\\\\\\\\\\\\\\\\\   \\\\\\\\\\\\\\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
+_darkcoinascii '  \\\\\\\\\\\\\\\\\\   \\\\\\\\\\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
+_darkcoinascii '    \\\\\\\\\\\\\\\\\\   \\\\\\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
+_darkcoinascii '      \\\\\\\\\\\\\\\\\\   \\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
+_darkcoinascii '        \\\\\\\\\\\\\\\\\\   \\\\\\                                  \\\\\\\\\\\\\\\\'
+_darkcoinascii '          \\\\\\\\\\\\\\\\\\   \\                                  \\\\\\\\\\\\\\\\'
+_darkcoinascii '            \\\\\\\\\\\\\\\\\\                                    \\\\\\\\\\\\\\\\'
+_darkcoinascii '              \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
+_darkcoinascii '                \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
+_darkcoinascii '                  \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
+
 {
-	_darkcoinascii '    \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
-	_darkcoinascii '      \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
-	_darkcoinascii '        \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
-	_darkcoinascii '          \\\\\\\\\\\\\\\\\\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
-	_darkcoinascii '\\\\\\\\\\\\\\\\\\   \\\\\\\\\\\\\\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
-	_darkcoinascii '  \\\\\\\\\\\\\\\\\\   \\\\\\\\\\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
-	_darkcoinascii '    \\\\\\\\\\\\\\\\\\   \\\\\\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
-	_darkcoinascii '      \\\\\\\\\\\\\\\\\\   \\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
-	_darkcoinascii '        \\\\\\\\\\\\\\\\\\   \\\\\\                                  \\\\\\\\\\\\\\\\'
-	_darkcoinascii '          \\\\\\\\\\\\\\\\\\   \\                                  \\\\\\\\\\\\\\\\'
-	_darkcoinascii '            \\\\\\\\\\\\\\\\\\                                    \\\\\\\\\\\\\\\\'
-	_darkcoinascii '              \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
-	_darkcoinascii '                \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
-	_darkcoinascii '                  \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
-}
-{{
-	_echecho "Creating configuration file 'darkgpu'"
-	cd ~
-	cat > darkgpu << EOF
+#####<Auto-create 'darkgpu' file.#####
+_echecho "Creating configuration file 'darkgpu'..."
+cd ~
+cat > darkgpu << EOF
 #!/bin/bash
+####################Define functions and set variables.####################
+##Functions to set terminal font colors.##
 _blue() {
-	tput setaf 4
+tput setaf 4
 }
 _green() {
-	tput setaf 2
+tput setaf 2
 }
+##Function to show Darkcoin ascii splash image in blue.
 _darkcoinascii () {
-	echo -e "\e[0;34m\$1"
-	sleep 0.1
-}
-#darkcoin ascii
-{
-	_darkcoinascii '    \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
-	_darkcoinascii '      \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
-	_darkcoinascii '        \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
-	_darkcoinascii '          \\\\\\\\\\\\\\\\\\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
-	_darkcoinascii '\\\\\\\\\\\\\\\\\\   \\\\\\\\\\\\\\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
-	_darkcoinascii '  \\\\\\\\\\\\\\\\\\   \\\\\\\\\\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
-	_darkcoinascii '    \\\\\\\\\\\\\\\\\\   \\\\\\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
-	_darkcoinascii '      \\\\\\\\\\\\\\\\\\   \\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
-	_darkcoinascii '        \\\\\\\\\\\\\\\\\\   \\\\\\                                  \\\\\\\\\\\\\\\\'
-	_darkcoinascii '          \\\\\\\\\\\\\\\\\\   \\                                  \\\\\\\\\\\\\\\\'
-	_darkcoinascii '            \\\\\\\\\\\\\\\\\\                                    \\\\\\\\\\\\\\\\'
-	_darkcoinascii '              \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
-	_darkcoinascii '                \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
-	_darkcoinascii '                  \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
+echo -e "\e[0;34m\$1"
+sleep 0.1
 }
 
+####################Start script.####################
+#Print Darkcoin ascii.
+_darkcoinascii '    \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
+_darkcoinascii '      \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
+_darkcoinascii '        \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
+_darkcoinascii '          \\\\\\\\\\\\\\\\\\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
+_darkcoinascii '\\\\\\\\\\\\\\\\\\   \\\\\\\\\\\\\\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
+_darkcoinascii '  \\\\\\\\\\\\\\\\\\   \\\\\\\\\\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
+_darkcoinascii '    \\\\\\\\\\\\\\\\\\   \\\\\\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
+_darkcoinascii '      \\\\\\\\\\\\\\\\\\   \\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
+_darkcoinascii '        \\\\\\\\\\\\\\\\\\   \\\\\\                                  \\\\\\\\\\\\\\\\'
+_darkcoinascii '          \\\\\\\\\\\\\\\\\\   \\                                  \\\\\\\\\\\\\\\\'
+_darkcoinascii '            \\\\\\\\\\\\\\\\\\                                    \\\\\\\\\\\\\\\\'
+_darkcoinascii '              \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
+_darkcoinascii '                \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
+_darkcoinascii '                  \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
+
+#Print debugging instructions.
 _blue
 echo "If this script starts and then immediately stops, run $(_green)'gedit darkgpu'$(_blue) and follow the instructions at the bottom of the script."
 echo "(To change the font color back to normal, run $(_green)'tput sgr0'$(_blue))"
 
-#important commands below
+#Execute the commands to run sgminer. (These are the important commands.)
 cd ~/sgminer
 export 'DISPLAY=0'
 export 'GPU_MAX_ALLOC_PERCENT=100'
 export 'GPU_USE_SYNC_OBJECTS=1'
 ./sgminer -k x11mod -o stratum+tcp://your.pool.address:port -u username.worker -p password --no-submit-stale -I 18
 tput sgr0
+
 ##If you have problems running this script (where sgminer starts and then immediately stops), it probably means that sgminer has saved your options from the line above.
 ##If this is the case, the command below should work. Delete the '#' in the line below and insert a '#' before the './sgminer...' three lines above.
 #./sgminer -k x11mod -I 18
 EOF
-}}
-{
-	_echecho "Making 'darkgpu' script executable"
-	chmod +x darkgpu
-{
-	read -p "Edit your configuration file 'darkgpu'. Save and close the file once you are finished.
-			Press [ENTER] to edit 'darkgpu': " a
-	gedit darkgpu
+#####/>Auto-creation of 'darkgpu' file finished.#####
 }
-{
-	_darkcoinascii '    \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\' 
-	_darkcoinascii '      \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\' 
-	_darkcoinascii '        \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\' 
-	_darkcoinascii '          \\\\\\\\\\\\\\\\\\\\\\\\\\                                  \\\\\\\\\\\\\\\\' 
-	_darkcoinascii '\\\\\\\\\\\\\\\\\\   \\\\\\\\\\\\\\\\\\\\\\                                  \\\\\\\\\\\\\\\\' 
-	_darkcoinascii '  \\\\\\\\\\\\\\\\\\   \\\\\\\\\\\\\\\\\\                                  \\\\\\\\\\\\\\\\' 
-	_darkcoinascii '    \\\\\\\\\\\\\\\\\\   \\\\\\\\\\\\\\                                  \\\\\\\\\\\\\\\\' 
-	_darkcoinascii '      \\\\\\\\\\\\\\\\\\   \\\\\\\\\\                                  \\\\\\\\\\\\\\\\' 
-	_darkcoinascii '        \\\\\\\\\\\\\\\\\\   \\\\\\                                  \\\\\\\\\\\\\\\\' 
-	_darkcoinascii '          \\\\\\\\\\\\\\\\\\   \\                                  \\\\\\\\\\\\\\\\' 
-	_darkcoinascii '            \\\\\\\\\\\\\\\\\\                                    \\\\\\\\\\\\\\\\' 
-	_darkcoinascii '              \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\' 
-	_darkcoinascii '                \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\' 
-	_darkcoinascii '                  \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
-	_echecho "Now go mine some darkcoin.
+
+#Make darkgpu script executable.
+_echecho "Making 'darkgpu' script executable"
+chmod +x darkgpu
+#Manually edit 'darkgpu' file.
+read -p "Edit your configuration file 'darkgpu'. Save and close the file once you are finished.
+Press [ENTER] to edit 'darkgpu': " a
+gedit darkgpu
+
+#Print Darkcoin ascii.
+_darkcoinascii '    \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\' 
+_darkcoinascii '      \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\' 
+_darkcoinascii '        \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\' 
+_darkcoinascii '          \\\\\\\\\\\\\\\\\\\\\\\\\\                                  \\\\\\\\\\\\\\\\' 
+_darkcoinascii '\\\\\\\\\\\\\\\\\\   \\\\\\\\\\\\\\\\\\\\\\                                  \\\\\\\\\\\\\\\\' 
+_darkcoinascii '  \\\\\\\\\\\\\\\\\\   \\\\\\\\\\\\\\\\\\                                  \\\\\\\\\\\\\\\\' 
+_darkcoinascii '    \\\\\\\\\\\\\\\\\\   \\\\\\\\\\\\\\                                  \\\\\\\\\\\\\\\\' 
+_darkcoinascii '      \\\\\\\\\\\\\\\\\\   \\\\\\\\\\                                  \\\\\\\\\\\\\\\\' 
+_darkcoinascii '        \\\\\\\\\\\\\\\\\\   \\\\\\                                  \\\\\\\\\\\\\\\\' 
+_darkcoinascii '          \\\\\\\\\\\\\\\\\\   \\                                  \\\\\\\\\\\\\\\\' 
+_darkcoinascii '            \\\\\\\\\\\\\\\\\\                                    \\\\\\\\\\\\\\\\' 
+_darkcoinascii '              \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\' 
+_darkcoinascii '                \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\' 
+_darkcoinascii '                  \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
+
+#Print post-installation instructions.
+_echecho "Now go mine some darkcoin.
 Run your new 'darkgpu' script by typing in the command $(_green)'./darkgpu'$(_blue) or $(_green)'sh darkgpu'$(_blue).
 $(_black){If you get an error that says $(_red)'No such file'$(_black) or $(_red)'Can't open darkgpu'$(_black), make sure you're in your home directory. In other words, run $(_green)'cd /~'$(_black) and then run $(_green)'./darkgpu'$(_black) again.}
 {If you have a problem where sgminer starts and then $(_red)immediately stops$(_black), read the comments in the 'darkgpu' script. Run $(_green)'gedit darkgpu'$(_black)."
-}

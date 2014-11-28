@@ -3,39 +3,23 @@
 ##https://darkcointalk.org/threads/noob-proof-how-to-install-sgminer-amd-drivers-and-gpu-mine-darkcoin-under-linux-ubuntu-64-bit.1813/  
 ##http://ubuntuforums.org/showthread.php?t=2243387&p=13117766
 
-#setting strings and functions
+####################Define functions and set variables.####################
+#Set variable for the NUMBER of the script to run after this one.
 next=2
-_black () {
-	tput setaf 0
-}
-_red () {
-	tput setaf 1
-}
+##Functions to set terminal font colors.##
 _green() {
 	tput setaf 2
-}
-_yellow() {
-	tput setaf 3
 }
 _blue() {
 	tput setaf 4
 }
-_magenta() {
-	tput setaf 5
-}
-_cyan() {
-	tput setaf 6
-}
-_white() {
-	tput setaf 7
-}
-_bold() {
-	tput bold
-}
+#Function to reset to default color.
 _tset() {
 	tput sgr 0
 }
+#Set variable for the NAME of the script to run after this one.
 nscript="$(_green)\'arch-sgminer$next.in\'$(_blue)"
+#Function to prompt to reboot.
 _rebooty () {
 	_green
 	printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' =
@@ -52,16 +36,19 @@ _rebooty () {
 		esac
 	_tset
 }
+#Function to echo [message] in blue.
 _echecho () {
 	_blue
 	printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' =
 	echo -e "$1..."
 	_tset
 }
+##Function to show ascii splash image in blue.
 _darkcoinascii () {
 	echo -e "\e[0;34m$1"
 	sleep 0.1
 }
+#Function to install package from the AUR if yaourt is not installed.
 _aurin () {
     if [[ ! -d build ]] ; then
     	mkdir build
@@ -79,67 +66,70 @@ _aurin () {
     cd ~
 }
 
-##starting script
-#darkcoin ascii
-{
-	_darkcoinascii '    \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
-	_darkcoinascii '      \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
-	_darkcoinascii '        \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
-	_darkcoinascii '          \\\\\\\\\\\\\\\\\\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
-	_darkcoinascii '\\\\\\\\\\\\\\\\\\   \\\\\\\\\\\\\\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
-	_darkcoinascii '  \\\\\\\\\\\\\\\\\\   \\\\\\\\\\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
-	_darkcoinascii '    \\\\\\\\\\\\\\\\\\   \\\\\\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
-	_darkcoinascii '      \\\\\\\\\\\\\\\\\\   \\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
-	_darkcoinascii '        \\\\\\\\\\\\\\\\\\   \\\\\\                                  \\\\\\\\\\\\\\\\'
-	_darkcoinascii '          \\\\\\\\\\\\\\\\\\   \\                                  \\\\\\\\\\\\\\\\'
-	_darkcoinascii '            \\\\\\\\\\\\\\\\\\                                    \\\\\\\\\\\\\\\\'
-	_darkcoinascii '              \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
-	_darkcoinascii '                \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
-	_darkcoinascii '                  \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
-}
-#Making sure scripts are under the default (~) directory.
-{
-	if [[ $PWD != $HOME ]] ; then
-		for n in 1 2 3 4 5 ; do
-			mv "sgminer$n.in" ~
-		done
-	fi
-}
-{
-	_echecho "Updating"
-	sudo pacman -Sy
-	if [[ ! -f "/usr/bin/yaourt" ]] ; then
-		_aurin yaourt
-	fi
-	yaourt -Syua
-}
-{
-	_echecho "Installing Dependencies"
-	yaourt -Sa git curl unzip gedit tar libtar automake autogen yasm autoconf dh-autoreconf pkg-config openssh screen libtool ncurses systemd xorg-server xorg-server-common xorg-server-devel xorg-server-utils rsync
-	sudo pacman -S xorg-server xorg-server-common xorg-server-devel xorg-server-utils linux linux-api-headers linux-docs linux-tools-meta lirc lirc-utils boinc mesa opencl-headers opencl-mesa mesa-libgl ati-dri
-{
-	_echecho "Checking current video driver"
-	sudo fglrxinfo
-	if [[ $? =~ "command not found" ]] ; then
-		_green
-		echo "Correct driver installed. Awesome."
-		_tset
-	else
-		sudo sed -i '70i\#Server = http://mirror.hactar.bz/Vi0L0/xorg115/$arch' /etc/pacman.conf
-        sudo sed -i '70i\#Server = http://mirror.rts-informatique.fr/archlinux-catalyst/repo/xorg115/$arch' /etc/pacman.conf
-        sudo sed -i '70i\## Mirrors, if the primary server does not work or is too slow:' /etc/pacman.conf
-        sudo sed -i '70i\Server = http://catalyst.wirephire.com/repo/xorg115/$arch' /etc/pacman.conf
-        sudo sed -i '70i\[xorg115]' /etc/pacman.conf
-        sudo sed -i '70i\ ' /etc/pacman.conf
-        sudo pacman-key -r 653C3094
-        sudo pacman-key --lsign-key 653C3094
-        sudo pacman -Syu
-        sudo pacman -S $(pacman -Slq xorg115)
-        yaourt -Sa catalyst-total opencl-headers acpid
-        sudo aticonfig --adapter=all --initial
-        yaourt -Sa linux-lts-ck linux-lts-ck-headers
-        _green
-        echo "Choose the lts kernel when booting. Otherwise, your desktop might not load. (AMD drivers are usually way behind the current Linux kernel)."
-        _tset
-}
+####################Start script.####################
+#Print Darkcoin ascii.
+_darkcoinascii '    \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
+_darkcoinascii '      \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
+_darkcoinascii '        \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
+_darkcoinascii '          \\\\\\\\\\\\\\\\\\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
+_darkcoinascii '\\\\\\\\\\\\\\\\\\   \\\\\\\\\\\\\\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
+_darkcoinascii '  \\\\\\\\\\\\\\\\\\   \\\\\\\\\\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
+_darkcoinascii '    \\\\\\\\\\\\\\\\\\   \\\\\\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
+_darkcoinascii '      \\\\\\\\\\\\\\\\\\   \\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
+_darkcoinascii '        \\\\\\\\\\\\\\\\\\   \\\\\\                                  \\\\\\\\\\\\\\\\'
+_darkcoinascii '          \\\\\\\\\\\\\\\\\\   \\                                  \\\\\\\\\\\\\\\\'
+_darkcoinascii '            \\\\\\\\\\\\\\\\\\                                    \\\\\\\\\\\\\\\\'
+_darkcoinascii '              \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
+_darkcoinascii '                \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
+_darkcoinascii '                  \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
+
+#Make sure scripts are under the default (~) directory.
+if [[ $PWD != $HOME ]] ; then
+	for n in 1 2 3 4 5 ; do
+		mv "sgminer$n.in" ~
+	done
+fi
+
+#Update and check for dependency 'yaourt'.
+_echecho "Updating"
+if [[ ! -f "/usr/bin/yaourt" ]] ; then
+	sudo pacman -Syu
+	_aurin yaourt
+else
+	yaourt -Syua	
+fi
+
+#Install other dependencies.
+_echecho "Installing Dependencies"
+yaourt -Sa git curl unzip gedit tar libtar automake autogen yasm autoconf dh-autoreconf pkg-config openssh screen libtool ncurses systemd xorg-server xorg-server-common xorg-server-devel xorg-server-utils rsync
+sudo pacman -S xorg-server xorg-server-common xorg-server-devel xorg-server-utils linux linux-api-headers linux-docs linux-tools-meta lirc lirc-utils boinc mesa opencl-headers opencl-mesa mesa-libgl ati-dri
+
+#Install 'catalyst-total' if it is not already installed.
+_echecho "Checking current video driver"
+sudo fglrxinfo
+if [[ $? =~ "command not found" ]] ; then
+	#if YES 'catalyst-total' installed...
+	_green
+	echo "Correct driver installed. Awesome."
+	_tset
+else
+	#if NOT 'catalyst-total' installed...
+	sudo sed -i '70i\#Server = http://mirror.hactar.bz/Vi0L0/xorg115/$arch' /etc/pacman.conf
+    sudo sed -i '70i\#Server = http://mirror.rts-informatique.fr/archlinux-catalyst/repo/xorg115/$arch' /etc/pacman.conf
+    sudo sed -i '70i\## Mirrors, if the primary server does not work or is too slow:' /etc/pacman.conf
+    sudo sed -i '70i\Server = http://catalyst.wirephire.com/repo/xorg115/$arch' /etc/pacman.conf
+    sudo sed -i '70i\[xorg115]' /etc/pacman.conf
+    sudo sed -i '70i\ ' /etc/pacman.conf
+    sudo pacman-key -r 653C3094
+    sudo pacman-key --lsign-key 653C3094
+    sudo pacman -Syu
+    sudo pacman -S $(pacman -Slq xorg115)
+    yaourt -Sa catalyst-total opencl-headers acpid
+    sudo aticonfig --adapter=all --initial
+    yaourt -Sa linux-lts-ck linux-lts-ck-headers
+    _green
+    echo "Choose the lts kernel when booting. Otherwise, your desktop might not load. (AMD drivers are usually way behind the current Linux kernel)."
+    _tset
+
+#Reboot.
 _rebooty
