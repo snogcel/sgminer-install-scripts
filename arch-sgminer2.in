@@ -24,7 +24,7 @@ _tset() {
 	tput sgr 0
 }
 #Set variable for the NAME of the script to run after this one.
-nscript="$(_green)\'arch-sgminer$next.in\'$(_blue)"
+nscript="$(_green)'arch-sgminer$next.in'$(_blue)"
 #Function to prompt to reboot.
 _rebooty () {
 	_blue
