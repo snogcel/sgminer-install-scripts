@@ -67,8 +67,7 @@ _darkclone() {
 	if [ ! -d "sgminer-install-scripts" ] ; then
 		git clone https://github.com/GreenRaccoon23/sgminer-install-scripts
 	fi
-	cd sgminer-install-scripts
-	mv -f ${dabv}*.in .
+	mv -f sgminer-install-scripts/${dabv}*.in .
 	chmod +x *.in
 	rm -df sgminer-install-scripts
 }
