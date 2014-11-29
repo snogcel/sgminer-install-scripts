@@ -8,6 +8,9 @@
 next=4
 ##Functions to set terminal font colors.##
 ##Functions to set terminal font colors.##
+_black () {
+	tput setaf 0
+}
 _red () {
 	tput setaf 1
 }
