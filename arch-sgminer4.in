@@ -125,7 +125,7 @@ echo "(To change the font color back to normal, run $(_green)'tput sgr0'$(_blue)
 
 #Execute the commands to run sgminer. (These are the important commands.)
 cd ~/sgminer
-export 'DISPLAY=0'
+export 'DISPLAY=:0'
 export 'GPU_MAX_ALLOC_PERCENT=100'
 export 'GPU_USE_SYNC_OBJECTS=1'
 ./sgminer -k x11mod -o stratum+tcp://your.pool.address:port -u username.worker -p password --no-submit-stale -I 18
