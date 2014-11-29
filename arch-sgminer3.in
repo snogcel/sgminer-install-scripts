@@ -4,9 +4,6 @@
 ##http://ubuntuforums.org/showthread.php?t=2243387&p=13117766
 
 ####################Define functions and set variables.####################
-#Set variable for the NUMBER of the script to run after this one.
-next=4
-##Functions to set terminal font colors.##
 ##Functions to set terminal font colors.##
 _black () {
 	tput setaf 0
@@ -30,7 +27,11 @@ _bold() {
 _tset() {
 	tput sgr 0
 }
-#Set variable for the NAME of the script to run after this one.
+#Set variable for the NUMBER of this script and the next one.
+curr=3
+next=4
+#Set variable for the NAME of this script and the next one.
+cscript="$(_green)'arch-sgminer$curr.in'$(_blue)"
 nscript="$(_green)'arch-sgminer$next.in'$(_blue)"
 #Function to prompt to reboot.
 _rebooty () {
@@ -83,10 +84,17 @@ _darkcoinascii '              \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 _darkcoinascii '                \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
 _darkcoinascii '                  \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
 
+_echecho "Starting script ${cscript}"
+
 #Begin sgminer installation.
 _echecho "Installing sgminer"
 _blue
+#Make sure locale is set.
 sudo locale
+#Make sure fglrx variables have been run.
+export DISPLAY=:0
+export GPU_MAX_ALLOC_PERCENT=100
+export GPU_USE_SYNC_OBJECTS=1
 #Prompt to install through AUR or GIT.
 echo -e "$(_blue)==> $(_bold)$(_white)Install through AUR $(_red)(not recommended)$(_white) or from source $(_green)(recommended)$(_white)?$(_black)
 	\t1) AUR
@@ -134,7 +142,7 @@ esac
 
 #Check if sgminer detects the GPU.
 _blue
-export 'DISPLAY=0'
+export 'DISPLAY=:0'
 export 'GPU_MAX_ALLOC_PERCENT=100'
 export 'GPU_USE_SYNC_OBJECTS=1'
 sgminer -n

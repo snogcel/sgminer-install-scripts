@@ -4,8 +4,6 @@
 ##http://ubuntuforums.org/showthread.php?t=2243387&p=13117766
 
 ####################Define functions and set variables.####################
-#Set variable for the NUMBER of the script to run after this one.
-next=4
 ##Functions to set terminal font colors.##
 _green() {
 	tput setaf 2
@@ -23,7 +21,11 @@ _bold() {
 _tset() {
 	tput sgr 0
 }
-#Set variable for the NAME of the script to run after this one.
+#Set variable for the NUMBER of this script and the next one.
+curr=3
+next=4
+#Set variable for the NAME of this script and the next one.
+cscript="$(_green)'sgminer$curr.in'$(_blue)"
 nscript="$(_green)'sgminer$next.in'$(_blue)"
 #Function to prompt to reboot.
 _rebooty () {
@@ -76,9 +78,20 @@ _darkcoinascii '              \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 _darkcoinascii '                \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
 _darkcoinascii '                  \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
 
-#Download and install AMD APP SDK.
+_echecho "Starting script ${cscript}"
+
+#Edit .xinitrc file.
 _echecho "Installing AMD APP SDK version 2.9"
 _blue
+for str in 'DISPLAY=:0' 'GPU_MAX_ALLOC_PERCENT=100' 'GPU_USE_SYNC_OBJECTS=1' ; do
+	echo "export ${str}" | tee -a "~/.xinitrc"
+	export "${str}"
+done
+
+#Begin AMD APP SDK installation.
+_echecho "Installing AMD APP SDK version 2.9"
+_blue
+#Download and extract AMD APP SDK.
 cd /tmp
 curl -o amd-app-sdk.tgz http://blog.truepps.com/downloads/AMD/AMD-APP-SDK-v2.9-lnx64.tgz
 sudo mkdir amd-app-sdk
@@ -86,6 +99,7 @@ sudo mv amd-app-sdk.tgz amd-app-sdk
 cd amd-app-sdk
 sudo tar -zxvf amd-app-sdk.tgz
 sudo tar -zxvf AMD-APP-SDK-v2.9-RC-lnx64.tgz
+#Install AMD APP SDK.
 cd AMD-APP-SDK-v2.9-RC-lnx64
 sudo cp -pv lib/x86_64/* /usr/lib/
 sudo rsync -avl include/CL/ /usr/include/CL/
@@ -93,6 +107,7 @@ cd ..
 sudo tar -zxvf icd-registration.tgz
 sudo rsync -avl etc/OpenCL/ /etc/OpenCL/
 sudo ldconfig
+#Run AMD APP SDK install file.
 _tset
 sudo perl default-install_lnx_64.pl 2>&1 | tee -a ~/sgminer3-opencl.log
 #Update catalyst driver configuration.

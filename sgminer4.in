@@ -4,8 +4,6 @@
 ##http://ubuntuforums.org/showthread.php?t=2243387&p=13117766
 
 ####################Define functions and set variables.####################
-#Set variable for the NUMBER of the script to run after this one.
-next=5
 ##Functions to set terminal font colors.##
 _green() {
 	tput setaf 2
@@ -23,7 +21,11 @@ _bold() {
 _tset() {
 	tput sgr 0
 }
-#Set variable for the NAME of the script to run after this one.
+#Set variable for the NUMBER of this script and the next one.
+curr=4
+next=5
+#Set variable for the NAME of this script and the next one.
+cscript="$(_green)'sgminer$curr.in'$(_blue)"
 nscript="$(_green)'sgminer$next.in'$(_blue)"
 #Function to prompt to reboot.
 _rebooty () {
@@ -76,6 +78,14 @@ _darkcoinascii '              \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 _darkcoinascii '                \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
 _darkcoinascii '                  \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
 
+_echecho "Starting script ${cscript}"
+
+#Make sure locale is set.
+sudo locale
+#Make sure fglrx variables have been run.
+export DISPLAY=:0
+export GPU_MAX_ALLOC_PERCENT=100
+export GPU_USE_SYNC_OBJECTS=1
 #Git clone sgminer.
 _echecho "Downloading sgminer"
 _blue
@@ -108,9 +118,9 @@ sudo make install
 
 #Check if sgminer detects the GPU.
 _blue
-export 'DISPLAY=0'
-export 'GPU_MAX_ALLOC_PERCENT=100'
-export 'GPU_USE_SYNC_OBJECTS=1'
+export DISPLAY=:0
+export GPU_MAX_ALLOC_PERCENT=100
+export GPU_USE_SYNC_OBJECTS=1
 sgminer -n
 read -p "==> $(_bold)$(_white)Did sgminer detect your GPU in the line above? [y/N]: $(_tset)$(_blue)" gpu
 case $gpu in

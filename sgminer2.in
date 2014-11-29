@@ -4,8 +4,6 @@
 ##http://ubuntuforums.org/showthread.php?t=2243387&p=13117766
 
 ####################Define functions and set variables.####################
-#Set variable for the NUMBER of the script to run after this one.
-next=3
 ##Functions to set terminal font colors.##
 _red () {
 	tput setaf 1
@@ -26,7 +24,11 @@ _bold() {
 _tset() {
 	tput sgr 0
 }
-#Set variable for the NAME of the script to run after this one.
+#Set variable for the NUMBER of this script and the next one.
+curr=2
+next=3
+#Set variable for the NAME of this script and the next one.
+cscript="$(_green)'sgminer$curr.in'$(_blue)"
 nscript="$(_green)'sgminer$next.in'$(_blue)"
 #Function to prompt to reboot.
 _rebooty () {
@@ -78,6 +80,8 @@ _darkcoinascii '            \\\\\\\\\\\\\\\\\\                                  
 _darkcoinascii '              \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
 _darkcoinascii '                \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
 _darkcoinascii '                  \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
+
+_echecho "Starting script ${cscript}"
 
 #Download catalyst driver from AMD website.
 _echecho "Downloading AMD driver packages"

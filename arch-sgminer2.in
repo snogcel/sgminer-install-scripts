@@ -3,9 +3,7 @@
 ##https://darkcointalk.org/threads/noob-proof-how-to-install-sgminer-amd-drivers-and-gpu-mine-darkcoin-under-linux-ubuntu-64-bit.1813/  
 ##http://ubuntuforums.org/showthread.php?t=2243387&p=13117766
 
-#setting strings and functions
-#Set variable for the NUMBER of the script to run after this one.
-next=3
+####################Define functions and set variables.####################
 ##Functions to set terminal font colors.##
 _green() {
 	tput setaf 2
@@ -23,7 +21,11 @@ _bold() {
 _tset() {
 	tput sgr 0
 }
-#Set variable for the NAME of the script to run after this one.
+#Set variable for the NUMBER of this script and the next one.
+curr=2
+next=3
+#Set variable for the NAME of this script and the next one.
+cscript="$(_green)'arch-sgminer$curr.in'$(_blue)"
 nscript="$(_green)'arch-sgminer$next.in'$(_blue)"
 #Function to prompt to reboot.
 _rebooty () {
@@ -75,6 +77,16 @@ _darkcoinascii '            \\\\\\\\\\\\\\\\\\                                  
 _darkcoinascii '              \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
 _darkcoinascii '                \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
 _darkcoinascii '                  \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
+
+_echecho "Starting script ${cscript}"
+
+#Edit .xinitrc file.
+_echecho "Installing AMD APP SDK version 2.9"
+_blue
+for str in 'DISPLAY=:0' 'GPU_MAX_ALLOC_PERCENT=100' 'GPU_USE_SYNC_OBJECTS=1' ; do
+	echo "export ${str}" | tee -a "~/.xinitrc"
+	export "${str}"
+done
 
 #Begin AMD APP SDK installation.
 _echecho "Installing AMD APP SDK version 2.9"
