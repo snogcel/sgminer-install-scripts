@@ -7,6 +7,12 @@ _green() {
 _blue() {
 	tput setaf 4
 }
+_white() {
+	tput setaf 7
+}
+_bold() {
+	tput bold
+}
 #Function to reset to default color.
 _tset() {
 	tput sgr 0
@@ -19,7 +25,6 @@ _echecho () {
 	printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' =
 	echo -e "$1..."
 	printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' -
-	_tset
 }
 #Function to show ascii splash image in blue.
 _darkcoinascii () {
@@ -72,7 +77,6 @@ _darkclone() {
 	mv -f sgminer-install-scripts/${dabv}*.in .
 	chmod +x *.in
 	rm -rf sgminer-install-scripts
-	./${dabv}1.in
 }
 ####################Start script.####################
 #Print Darkcoin ascii.
@@ -123,6 +127,8 @@ case $distro in
 		;;	
 esac
 _blue
-echo "Done! Now run the command below:
-cd && ./${dabv}1.in"
+echo "Done! Now run the command below:"
+_bold
+_white
+echo "cd && ./${dabv}1.in"
 _tset
