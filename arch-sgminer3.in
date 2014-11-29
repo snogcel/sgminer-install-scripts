@@ -8,11 +8,20 @@
 next=4
 ##Functions to set terminal font colors.##
 ##Functions to set terminal font colors.##
+_red () {
+	tput setaf 1
+}
 _green() {
 	tput setaf 2
 }
 _blue() {
 	tput setaf 4
+}
+_white() {
+	tput setaf 7
+}
+_bold() {
+	tput bold
 }
 #Function to reset to default color.
 _tset() {
@@ -22,17 +31,20 @@ _tset() {
 nscript="$(_green)\'arch-sgminer$next.in\'$(_blue)"
 #Function to prompt to reboot.
 _rebooty () {
-	_green
+	_blue
 	printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' =
-	echo "You need to reboot before continuing. Reboot and then run $nscript.
-	Reboot now? [y/N]: " reboot
+	echo "==> $(_bold)$(_white)You need to reboot before continuing.
+$(_tset)$(_blue)==> $(_bold)$(_white)Reboot and then run $nscript.
+$(_tset)$(_blue)==> $(_bold)$(_white)Reboot now? [y/N]
+$(_tset)$(_blue)==> -----------------------------------------------------------"
+	read -p "==> " reboot
 		case $reboot in
 			y|Y)
-				echo "Rebooting now."
+				echo "$(_bold)$(_white)Rebooting now..."
 				sudo reboot
 				;;
 			*)
-				echo "Reboot before running $nscript."
+				echo "$(_bold)$(_white)Reboot before running $nscript."
 				;;
 		esac
 	_tset
@@ -42,6 +54,7 @@ _echecho () {
 	_blue
 	printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' =
 	echo -e "$1..."
+	printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' -
 	_tset
 }
 ##Function to show ascii splash image in blue.
@@ -71,9 +84,11 @@ _darkcoinascii '                  \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 _echecho "Installing sgminer"
 _blue
 #Prompt to install through AUR or GIT.
-read -p "1) AUR
-2) Source
-	Install through AUR or from source? [1/2] " liaison
+echo -e "$(_blue)==> $(_bold)$(_white)Install through AUR $(_red)(not recommended)$(_white) or from source $(_green)(recommended)$(_white)?$(_black)
+	\t1) AUR
+	\t2) Source (recommended)
+$(_tset)$(_blue)==> -------------------------------------------------------------------------"
+read -p "==> $(_bold)$(_black)[1/2]$(_tset)$(_blue): " liaison
 case $liaison in 
 	#AUR
 	[1] | [aA] | [aA][uU][rR] )
@@ -83,13 +98,15 @@ case $liaison in
 				Press [ENTER] to continue: " go
 		;;
 	#Source
-	[2] | [sS] | [sS][oO][uU][rR][cC][eE] )
+	* )
 		#Install through GIT.
 		_echecho "Downloading sgminer"
+		_blue
 		cd ~/
 		git clone https://github.com/sgminer-dev/sgminer
 		#Download AMD ADL SDK.
 		_echecho "Moving AMD ADL SDK files into sgminer directory..."
+		_blue
 		cd ~/Downloads
 		curl -o adl_sdk.zip http://blog.truepps.com/downloads/AMD/ADL_SDK_6.0.zip
 		mkdir adl_sdk
@@ -113,7 +130,7 @@ esac
 
 #Check if sgminer detects the GPU.
 sgminer -n
-read -p "Did sgminer detect your GPU in the line above? [y/N]:" gpu
+read -p "$(_tset)$(_blue)==> $(_bold)$(_white)Did sgminer detect your GPU in the line above? [y/N]: $(_tset)$(_blue)" gpu
 case $gpu in
 	#if YES the GPU WAS detected
 	y|Y)
@@ -125,14 +142,19 @@ case $gpu in
 		#Update driver configuration file.
 		sudo aticonfig --adapter=all --initial
 		#Prompt to reboot.
-		read -p "Reboot and then run 'sgminer -n'. If it detects your GPU after rebooting, then run $nscript. If sgminer STILL doesn't detect your GPU, you'll have to search Google to figure out why sgminer hates you. :(
-Reboot now? [y/N]: " reboot
+		echo "$(_tset)$(_blue)==> $(_bold)$(_white)Reboot and then run 'sgminer -n'."
+		echo "$(_tset)$(_blue)==> $(_bold)$(_white)If it detects your GPU after rebooting, then run $nscript."
+		echo "$(_tset)$(_blue)==> $(_bold)$(_white)If sgminer STILL doesn't detect your GPU, you'll have to search Google to figure out why sgminer hates you. :("
+		echo "$(_tset)$(_blue)==> $(_bold)$(_white)Reboot now? [y/N]: "
+		echo "$(_tset)$(_blue)==> -----------------------------------------------------------"
+		read -p "==> " reboot
 		case $reboot in
 			y|Y)
 				sudo reboot
 				;;
 			*)
-				read "Reboot and then run 'sgminer -n'. If it detects your GPU after rebooting, then run $nscript."
+				echo "$(_tset)$(_blue)==> $(_bold)$(_white)Reboot and then run 'sgminer -n'."
+				echo "$(_tset)$(_blue)==> $(_bold)$(_white) If it detects your GPU after rebooting, then run $nscript."
 				;;
 		esac
 esac

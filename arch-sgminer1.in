@@ -13,6 +13,12 @@ _green() {
 _blue() {
 	tput setaf 4
 }
+_white() {
+	tput setaf 7
+}
+_bold() {
+	tput bold
+}
 #Function to reset to default color.
 _tset() {
 	tput sgr 0
@@ -21,17 +27,20 @@ _tset() {
 nscript="$(_green)\'arch-sgminer$next.in\'$(_blue)"
 #Function to prompt to reboot.
 _rebooty () {
-	_green
-	printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' =
-	echo "You need to reboot before continuing. Reboot and then run $nscript.
-	Reboot now? [y/N]: " reboot
+	_blue
+	printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' = &&
+	echo "==> $(_bold)$(_white)You need to reboot before continuing.
+$(_tset)$(_blue)==> $(_bold)$(_white)Reboot and then run $nscript.
+$(_tset)$(_blue)==> $(_bold)$(_white)Reboot now? [y/N]
+$(_tset)$(_blue)==> -----------------------------------------------------------"
+	read -p "==> " reboot
 		case $reboot in
 			y|Y)
-				echo "Rebooting now."
+				echo "$(_bold)$(_white)Rebooting now..."
 				sudo reboot
 				;;
 			*)
-				echo "Reboot before running $nscript."
+				echo "$(_bold)$(_white)Reboot before running $nscript."
 				;;
 		esac
 	_tset
@@ -50,6 +59,8 @@ _darkcoinascii () {
 }
 #Function to install package from the AUR if yaourt is not installed.
 _aurin () {
+    _echecho $1
+    _blue
     if [[ ! -d build ]] ; then
     	mkdir build
 	fi
@@ -93,7 +104,7 @@ fi
 #Update and check for dependency 'yaourt'.
 _echecho "Updating"
 if [[ ! -f "/usr/bin/yaourt" ]] ; then
-	sudo pacman -Syu
+	sudo pacman -Syu --color always
 	_aurin yaourt
 else
 	yaourt -Syua	
@@ -102,7 +113,7 @@ fi
 #Install other dependencies.
 _echecho "Installing Dependencies"
 yaourt -Sa git curl unzip gedit tar libtar automake autogen yasm autoconf dh-autoreconf pkg-config openssh screen libtool ncurses systemd xorg-server xorg-server-common xorg-server-devel xorg-server-utils rsync
-sudo pacman -S xorg-server xorg-server-common xorg-server-devel xorg-server-utils linux linux-api-headers linux-docs linux-tools-meta lirc lirc-utils boinc mesa opencl-headers opencl-mesa mesa-libgl ati-dri
+sudo pacman -S xorg-server xorg-server-common xorg-server-devel xorg-server-utils linux linux-api-headers linux-docs linux-tools-meta lirc lirc-utils boinc mesa opencl-headers opencl-mesa ati-dri --color always
 
 #Install 'catalyst-total' if it is not already installed.
 _echecho "Checking current video driver"
@@ -122,13 +133,15 @@ else
     sudo sed -i '70i\ ' /etc/pacman.conf
     sudo pacman-key -r 653C3094
     sudo pacman-key --lsign-key 653C3094
-    sudo pacman -Syu
-    sudo pacman -S $(pacman -Slq xorg115)
+    sudo pacman -Syu --color always
+    sudo pacman -S $(pacman -Slq xorg115) --color always
     yaourt -Sa catalyst-total opencl-headers acpid
+    _blue
     sudo aticonfig --adapter=all --initial
-    yaourt -Sa linux-lts-ck linux-lts-ck-headers
-    _green
-    echo "Choose the lts kernel when booting. Otherwise, your desktop might not load. (AMD drivers are usually way behind the current Linux kernel)."
+    _tset
+    yaourt -Sa linux-lts-ck-headers
+    _blue
+    echo "==> $(_bold)$(_white)Choose the lts kernel when booting. Otherwise, your desktop might not load. (AMD drivers are usually way behind the current Linux kernel)."
     _tset
 
 #Reboot.
