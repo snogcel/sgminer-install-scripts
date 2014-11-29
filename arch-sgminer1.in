@@ -119,11 +119,6 @@ sudo pacman -S xorg-server xorg-server-common xorg-server-devel xorg-server-util
 #Install 'catalyst-total' if it is not already installed.
 _echecho "Checking current video driver"
 if [[ -z $(ls /bin | grep fglrxinfo) ]] ; then
-	#if YES 'catalyst-total' installed...
-	_green
-	echo "Correct driver installed. Awesome."
-	_tset
-else
 	#if NOT 'catalyst-total' installed...
 	sudo sed -i '70i\#Server = http://mirror.hactar.bz/Vi0L0/xorg115/$arch' /etc/pacman.conf
     sudo sed -i '70i\#Server = http://mirror.rts-informatique.fr/archlinux-catalyst/repo/xorg115/$arch' /etc/pacman.conf
@@ -143,6 +138,11 @@ else
     _blue
     echo "==> $(_bold)$(_white)Choose the lts kernel when booting. Otherwise, your desktop might not load. (AMD drivers are usually way behind the current Linux kernel)."
     _tset
+else
+	#if YES 'catalyst-total' installed...
+	_green
+	echo "Correct driver installed. Awesome."
+	_tset
 fi
 
 #Reboot.
