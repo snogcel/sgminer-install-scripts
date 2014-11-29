@@ -18,6 +18,7 @@ _echecho () {
 	_blue
 	printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' =
 	echo -e "$1..."
+	printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' -
 	_tset
 }
 #Function to show ascii splash image in blue.
@@ -34,7 +35,7 @@ _pacman() {
 		else
 			pkg=$2
 		fi
-		sudo pacman -S $pkg
+		sudo pacman -S $pkg --color always
 	fi
 }
 #Function to check if a package is installed,
@@ -53,6 +54,7 @@ _buntuman() {
 #place them in the $HOME directory,
 #and make them executable.
 _darkclone() {
+	_blue
 	case $1 in 
 		Arch)
 			dabv="arch-sgminer"
@@ -70,6 +72,7 @@ _darkclone() {
 	mv -f sgminer-install-scripts/${dabv}*.in .
 	chmod +x *.in
 	rm -rf sgminer-install-scripts
+	./${dabv}1.in
 }
 ####################Start script.####################
 #Print Darkcoin ascii.
@@ -119,4 +122,7 @@ case $distro in
 		esac
 		;;	
 esac
+_blue
+echo "Done! Now run the command below:
+cd && ./${dabv}1.in"
 _tset
