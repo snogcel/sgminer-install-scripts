@@ -124,7 +124,7 @@ case $liaison in
 		_echecho "Installing sgminer..."
 		cd ~/sgminer
 		git submodule init
-		git submoduel update
+		git submodule update
 		autoreconf -i
 		CFLAGS="-O2 -Wall -march=native" ./configure
 		make
