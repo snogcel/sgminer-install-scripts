@@ -86,6 +86,7 @@ _darkcoinascii '                  \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 #Begin sgminer installation.
 _echecho "Installing sgminer"
 _blue
+sudo locale
 #Prompt to install through AUR or GIT.
 echo -e "$(_blue)==> $(_bold)$(_white)Install through AUR $(_red)(not recommended)$(_white) or from source $(_green)(recommended)$(_white)?$(_black)
 	\t1) AUR
