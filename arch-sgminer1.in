@@ -24,7 +24,7 @@ _tset() {
 	tput sgr 0
 }
 #Set variable for the NAME of the script to run after this one.
-nscript="$(_green)\'arch-sgminer$next.in\'$(_blue)"
+nscript="$(_green)'arch-sgminer$next.in'$(_blue)"
 #Function to prompt to reboot.
 _rebooty () {
 	_blue
@@ -118,8 +118,7 @@ sudo pacman -S xorg-server xorg-server-common xorg-server-devel xorg-server-util
 
 #Install 'catalyst-total' if it is not already installed.
 _echecho "Checking current video driver"
-sudo fglrxinfo
-if [[ $? =~ "command not found" ]] ; then
+if [[ -z $(ls /bin | grep fglrxinfo) ]] ; then
 	#if YES 'catalyst-total' installed...
 	_green
 	echo "Correct driver installed. Awesome."
