@@ -133,6 +133,9 @@ esac
 
 #Check if sgminer detects the GPU.
 _blue
+export 'DISPLAY=0'
+export 'GPU_MAX_ALLOC_PERCENT=100'
+export 'GPU_USE_SYNC_OBJECTS=1'
 sgminer -n
 read -p "==> $(_bold)$(_white)Did sgminer detect your GPU in the line above? [y/N]: $(_tset)$(_blue)" gpu
 case $gpu in
