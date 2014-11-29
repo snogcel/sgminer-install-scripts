@@ -16,6 +16,9 @@ _green() {
 _blue() {
 	tput setaf 4
 }
+_white() {
+	tput setaf 7
+}
 _bold() {
 	tput bold
 }
@@ -27,17 +30,20 @@ _tset() {
 nscript="$(_green)\'arch-sgminer$next.in\'$(_blue)"
 #Function to prompt to reboot.
 _rebooty () {
-	_green
-	printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' =
-	echo "You need to reboot before continuing. Reboot and then run $nscript.
-	Reboot now? [y/N]: " reboot
+	_blue
+	printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' = &&
+	echo "==> $(_bold)$(_white)You need to reboot before continuing.
+$(_tset)$(_blue)==> $(_bold)$(_white)Reboot and then run $nscript.
+$(_tset)$(_blue)==> $(_bold)$(_white)Reboot now? [y/N]
+$(_tset)$(_blue)==> -----------------------------------------------------------"
+	read -p "==> " reboot
 		case $reboot in
 			y|Y)
-				echo "Rebooting now."
+				echo "$(_bold)$(_white)Rebooting now..."
 				sudo reboot
 				;;
 			*)
-				echo "Reboot before running $nscript."
+				echo "$(_bold)$(_white)Reboot before running $nscript."
 				;;
 		esac
 	_tset
@@ -47,6 +53,7 @@ _echecho () {
 	_blue
 	printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' =
 	echo -e "$1..."
+	printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' -
 	_tset
 }
 ##Function to show ascii splash image in blue.
@@ -74,6 +81,7 @@ _darkcoinascii '                  \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 #Download catalyst driver from AMD website.
 _echecho "Downloading AMD driver packages"
+_blue
 cd ~/Downloads
 if [[ ! -e driver.zip ]] ; then
 	curl -o driver.zip http://www2.ati.com/drivers/linux/amd-catalyst-14-9-linux-x86-x86-64.zip --referer http://support.amd.com/en-us/kb-articles/Pages/Catalyst-Linux-Installer-Notes.aspx
@@ -81,6 +89,7 @@ fi
 
 #Unpack the downloaded driver.
 _echecho "Unpacking driver installation application"
+_blue
 unzip driver.zip
 cd fglr*
 chmod a+x *.run

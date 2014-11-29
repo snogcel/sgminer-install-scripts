@@ -129,8 +129,9 @@ case $liaison in
 esac
 
 #Check if sgminer detects the GPU.
+_blue
 sgminer -n
-read -p "$(_tset)$(_blue)==> $(_bold)$(_white)Did sgminer detect your GPU in the line above? [y/N]: $(_tset)$(_blue)" gpu
+read -p "==> $(_bold)$(_white)Did sgminer detect your GPU in the line above? [y/N]: $(_tset)$(_blue)" gpu
 case $gpu in
 	#if YES the GPU WAS detected
 	y|Y)

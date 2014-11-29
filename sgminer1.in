@@ -13,6 +13,12 @@ _green() {
 _blue() {
 	tput setaf 4
 }
+_white() {
+	tput setaf 7
+}
+_bold() {
+	tput bold
+}
 #Function to reset to default color.
 _tset() {
 	tput sgr 0
@@ -21,17 +27,20 @@ _tset() {
 nscript="$(_green)\'arch-sgminer$next.in\'$(_blue)"
 #Function to prompt to reboot.
 _rebooty () {
-	_green
-	printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' =
-	echo "You need to reboot before continuing. Reboot and then run $nscript.
-	Reboot now? [y/N]: " reboot
+	_blue
+	printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' = &&
+	echo "==> $(_bold)$(_white)You need to reboot before continuing.
+$(_tset)$(_blue)==> $(_bold)$(_white)Reboot and then run $nscript.
+$(_tset)$(_blue)==> $(_bold)$(_white)Reboot now? [y/N]
+$(_tset)$(_blue)==> -----------------------------------------------------------"
+	read -p "==> " reboot
 		case $reboot in
 			y|Y)
-				echo "Rebooting now."
+				echo "$(_bold)$(_white)Rebooting now..."
 				sudo reboot
 				;;
 			*)
-				echo "Reboot before running $nscript."
+				echo "$(_bold)$(_white)Reboot before running $nscript."
 				;;
 		esac
 	_tset
@@ -41,6 +50,7 @@ _echecho () {
 	_blue
 	printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' =
 	echo -e "$1..."
+	printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' -
 	_tset
 }
 ##Function to show ascii splash image in blue.
@@ -67,6 +77,7 @@ _darkcoinascii '                \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 _darkcoinascii '                  \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
 
 #Make sure scripts are under the default (~) directory.
+_blue
 if [[ $PWD != $HOME ]] ; then
 	for n in 1 2 3 4 5 ; do
 		mv "sgminer$n.in" ~
@@ -85,19 +96,23 @@ sudo aptitude install -yr git curl unzip automake autogen yasm autoconf dh-autor
 
 #Install 'catalyst' if it is not already installed.
 _echecho "Checking current video driver"
+_blue
 sudo fglrxinfo
 if [[ $? =~ "command not found" ]] ; then
 	#if YES installed
+	_bold
 	_green
 	echo "Correct driver installed. Awesome."
 	_tset
 else
 	#if NOT installed
+    _blue
     sudo sh /usr/share/ati/fglrx-uninstall.sh
     sudo aptitude purge fglrx fglrx_* fglrx-amdcccle* fglrx-dev* xorg-driver-fglrx
 	sudo rm /etc/X11/xorg.conf
 	sudo aptitude reinstall -yr xserver-xorg-core
 	sudo dpkg-reconfigure xserver-xorg
+	_tset
 	sudo aptitude update
 	sudo aptitude upgrade -yr
 fi

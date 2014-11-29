@@ -13,6 +13,12 @@ _green() {
 _blue() {
 	tput setaf 4
 }
+_white() {
+	tput setaf 7
+}
+_bold() {
+	tput bold
+}
 #Function to reset to default color.
 _tset() {
 	tput sgr 0
@@ -21,17 +27,20 @@ _tset() {
 nscript="$(_green)\'arch-sgminer$next.in\'$(_blue)"
 #Function to prompt to reboot.
 _rebooty () {
-	_green
-	printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' =
-	echo "You need to reboot before continuing. Reboot and then run $nscript.
-	Reboot now? [y/N]: " reboot
+	_blue
+	printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' = &&
+	echo "==> $(_bold)$(_white)You need to reboot before continuing.
+$(_tset)$(_blue)==> $(_bold)$(_white)Reboot and then run $nscript.
+$(_tset)$(_blue)==> $(_bold)$(_white)Reboot now? [y/N]
+$(_tset)$(_blue)==> -----------------------------------------------------------"
+	read -p "==> " reboot
 		case $reboot in
 			y|Y)
-				echo "Rebooting now."
+				echo "$(_bold)$(_white)Rebooting now..."
 				sudo reboot
 				;;
 			*)
-				echo "Reboot before running $nscript."
+				echo "$(_bold)$(_white)Reboot before running $nscript."
 				;;
 		esac
 	_tset
@@ -41,6 +50,7 @@ _echecho () {
 	_blue
 	printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' =
 	echo -e "$1..."
+	printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' -
 	_tset
 }
 ##Function to show ascii splash image in blue.
@@ -68,6 +78,7 @@ _darkcoinascii '                  \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 #Download and install AMD APP SDK.
 _echecho "Installing AMD APP SDK version 2.9"
+_blue
 cd /tmp
 curl -o amd-app-sdk.tgz http://blog.truepps.com/downloads/AMD/AMD-APP-SDK-v2.9-lnx64.tgz
 sudo mkdir amd-app-sdk
@@ -82,8 +93,10 @@ cd ..
 sudo tar -zxvf icd-registration.tgz
 sudo rsync -avl etc/OpenCL/ /etc/OpenCL/
 sudo ldconfig
+_tset
 sudo perl default-install_lnx_64.pl 2>&1 | tee -a ~/sgminer3-opencl.log
 #Update catalyst driver configuration.
+_blue
 sudo aticonfig --adapter=all --initial
 
 #Prompt to reboot.
