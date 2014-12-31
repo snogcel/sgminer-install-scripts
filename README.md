@@ -32,9 +32,8 @@ Download, extract, and make executable:
 cd ~  
 git clone https://github.com/snogcel/sgminer-install-scripts
 cd sgminer-install-scripts  
-mv sgminer-install-scripts/s*.in .  
 chmod +x *.in  
-rm -df sgminer-install-scripts  
+./INSTALL
 ```
   
 **Arch Linux Users**  
@@ -43,8 +42,7 @@ Download, extract, and make executable:
 cd ~  
 git clone https://github.com/snogcel/sgminer-install-scripts  
 cd sgminer-install-scripts  
-mv sgminer-install-scripts/a*.in .  
 chmod +x *.in  
-rm -df sgminer-install-scripts  
+./INSTALL
 ```
   
