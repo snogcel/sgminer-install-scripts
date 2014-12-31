@@ -109,7 +109,7 @@ sudo rsync -avl etc/OpenCL/ /etc/OpenCL/
 sudo ldconfig
 #Run AMD APP SDK install file.
 _tset
-sudo perl default-install_lnx_64.pl 2>&1 | tee -a ~/sgminer3-opencl.log
+sudo perl default-install_lnx_64.pl 2>&1 | tee -a ~/spreadcoinx11-sgminer3-opencl.log
 #Update catalyst driver configuration.
 _blue
 sudo aticonfig --adapter=all --initial

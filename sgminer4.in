@@ -90,7 +90,7 @@ export GPU_USE_SYNC_OBJECTS=1
 _echecho "Downloading sgminer"
 _blue
 cd ~/
-git clone https://github.com/sgminer-dev/sgminer.git
+git clone https://github.com/spreadcoin-project/spreadcoinx11-sgminer.git
 
 #Download AMD ADL SDK.
 _echecho "Moving AMD ADL SDK files into sgminer directory"
@@ -102,13 +102,13 @@ mv adl_sdk.zip adl_sdk
 cd adl_sdk
 unzip adl_sdk.zip
 #Copy AMD ADL SDK file to sgminer directory.
-cp ~/Downloads/adl_sdk/include/* ~/sgminer/ADL_SDK
+cp ~/Downloads/adl_sdk/include/* ~/spreadcoinx11-sgminer/ADL_SDK
 cd ~/
 
 #Compile, make, and install sgminer.
 _echecho "Installing sgminer..."
 _blue
-cd ~/sgminer
+cd ~/spreadcoinx11-sgminer
 git submodule init
 git submodule update
 autoreconf -i

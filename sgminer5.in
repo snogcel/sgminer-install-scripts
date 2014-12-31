@@ -121,7 +121,7 @@ echo "If this script starts and then immediately stops, run $(_green)'gedit dark
 echo "(To change the font color back to normal, run $(_green)'tput sgr0'$(_blue))"
 
 #Execute the commands to run sgminer. (These are the important commands.)
-cd ~/sgminer
+cd ~/spreadcoinx11-sgminer
 export 'DISPLAY=:0'
 export 'GPU_MAX_ALLOC_PERCENT=100'
 export 'GPU_USE_SYNC_OBJECTS=1'
