@@ -81,11 +81,11 @@ _darkcoinascii '                \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 _darkcoinascii '                  \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
 
 {
-#####<Auto-create 'darkgpu' file.#####
-_echecho "Creating configuration file 'darkgpu'..."
+#####<Auto-create 'spreadgpu' file.#####
+_echecho "Creating configuration file 'spreadgpu'..."
 _blue
 cd ~
-cat > darkgpu << EOF
+cat > spreadgpu << EOF
 #!/bin/bash
 ####################Define functions and set variables.####################
 ##Functions to set terminal font colors.##
@@ -120,7 +120,7 @@ _darkcoinascii '                  \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 #Print debugging instructions.
 _blue
-echo "If this script starts and then immediately stops, run $(_green)'gedit darkgpu'$(_blue) and follow the instructions at the bottom of the script."
+echo "If this script starts and then immediately stops, run $(_green)'gedit spreadgpu'$(_blue) and follow the instructions at the bottom of the script."
 echo "(To change the font color back to normal, run $(_green)'tput sgr0'$(_blue))"
 
 #Execute the commands to run sgminer. (These are the important commands.)
@@ -128,24 +128,24 @@ cd ~/spreadcoinx11-sgminer
 export DISPLAY=:0
 export GPU_MAX_ALLOC_PERCENT=100
 export GPU_USE_SYNC_OBJECTS=1
-./sgminer -k x11mod -o stratum+tcp://your.pool.address:port -u username.worker -p password --no-submit-stale -I 18
+./sgminer -o http://127.0.0.1:41677 -u user -p pass -w 64 -I 18
 tput sgr0
 
 ##If you have problems running this script (where sgminer starts and then immediately stops), it probably means that sgminer has saved your options from the line above.
 ##If this is the case, the command below should work. Delete the '#' in the line below and insert a '#' before the './sgminer...' three lines above.
-#./sgminer -k x11mod -I 18
+#./sgminer -I 18
 EOF
-#####/>Auto-creation of 'darkgpu' file finished.#####
+#####/>Auto-creation of 'spreadgpu' file finished.#####
 }
 
-#Make darkgpu script executable.
-_echecho "Making 'darkgpu' script executable"
+#Make spreadgpu script executable.
+_echecho "Making 'spreadgpu' script executable"
 _blue
-chmod +x darkgpu
-#Manually edit 'darkgpu' file.
-read -p "==> $(_bold)$(_white)Edit your configuration file 'darkgpu'. Save and close the file once you are finished.
-$(_tset)$(_blue)==> $(_bold)$(_white)Press [ENTER] to edit 'darkgpu': $(_tset)$(_blue)" a
-gedit darkgpu
+chmod +x spreadgpu
+#Manually edit 'spreadgpu' file.
+read -p "==> $(_bold)$(_white)Edit your configuration file 'spreadgpu'. Save and close the file once you are finished.
+$(_tset)$(_blue)==> $(_bold)$(_white)Press [ENTER] to edit 'spreadgpu': $(_tset)$(_blue)" a
+gedit spreadgpu
 
 #Print Darkcoin ascii.
 _darkcoinascii '    \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\' 
@@ -165,6 +165,6 @@ _darkcoinascii '                  \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 #Print post-installation instructions.
 _echecho "Now go mine some darkcoin.
-Run your new 'darkgpu' script by typing in the command $(_green)'./darkgpu'$(_blue) or $(_green)'sh darkgpu'$(_blue).
-$(_black){If you get an error that says $(_red)'No such file'$(_black) or $(_red)'Can't open darkgpu'$(_black), make sure you're in your home directory. In other words, run $(_green)'cd /~'$(_black) and then run $(_green)'./darkgpu'$(_black) again.}
-{If you have a problem where sgminer starts and then $(_red)immediately stops$(_black), read the comments in the 'darkgpu' script. Run $(_green)'gedit darkgpu'$(_black)."
+Run your new 'spreadgpu' script by typing in the command $(_green)'./spreadgpu'$(_blue) or $(_green)'sh spreadgpu'$(_blue).
+$(_black){If you get an error that says $(_red)'No such file'$(_black) or $(_red)'Can't open spreadgpu'$(_black), make sure you're in your home directory. In other words, run $(_green)'cd /~'$(_black) and then run $(_green)'./spreadgpu'$(_black) again.}
+{If you have a problem where sgminer starts and then $(_red)immediately stops$(_black), read the comments in the 'spreadgpu' script. Run $(_green)'gedit spreadgpu'$(_black)."
