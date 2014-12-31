@@ -8,7 +8,7 @@ http://ubuntuforums.org/showthread.php?t=2243387&p=13117766
 
 *************************************************************************
 ** Install spreadcoind before proceeding ********************************
-
+```
 mkdir ~/spreadcoin64
 cd ~/spreadcoin64
 wget http://spreadcoin.net/files/spreadcoin64.tar.xz
@@ -21,7 +21,7 @@ rpcuser=user
 rpcpassword=pass
 EOF
 ./spreadcoind
-
+```
 ** Wait for daemon to fully sync
 ** this can take awhile... check progress using ./spreadcoind getinfo
 *************************************************************************
