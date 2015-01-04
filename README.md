@@ -13,11 +13,11 @@ http://ubuntuforums.org/showthread.php?t=2243387&p=13117766
 
 However, in a nutshell...
 
-sgminer1.in - installs common dependencies and other updates
-sgminer2.in - installs Catalyst driver (14.9)
-sgminer3.in - installs AMD APP SDK 2.9
-sgminer4.in - compiles SGMiner (spreadcoindx11-sgminer)
-sgminer5.in - creates batch file for mining
+- sgminer1.in - installs common dependencies and other updates
+- sgminer2.in - installs Catalyst driver (14.9)
+- sgminer3.in - installs AMD APP SDK 2.9
+- sgminer4.in - compiles SGMiner (spreadcoindx11-sgminer)
+- sgminer5.in - creates batch file for mining
 
 My recommendation is to install spreadcoind between steps 4 and 5. At this point the system should be updated and stable. Using the commands listed below it should be really straightforward but note that it takes about 15 minutes to sync the blockchain.
 
