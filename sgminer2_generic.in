@@ -1,0 +1,139 @@
+#!/bin/bash
+##More detailed instructions under these guides:  
+##https://darkcointalk.org/threads/noob-proof-how-to-install-sgminer-amd-drivers-and-gpu-mine-darkcoin-under-linux-ubuntu-64-bit.1813/  
+##http://ubuntuforums.org/showthread.php?t=2243387&p=13117766
+
+####################Define functions and set variables.####################
+##Functions to set terminal font colors.##
+_red () {
+	tput setaf 1
+}
+_green() {
+	tput setaf 2
+}
+_blue() {
+	tput setaf 4
+}
+_white() {
+	tput setaf 7
+}
+_bold() {
+	tput bold
+}
+#Function to reset to default color.
+_tset() {
+	tput sgr 0
+}
+#Set variable for the NUMBER of this script and the next one.
+curr=2
+next=3
+#Set variable for the NAME of this script and the next one.
+cscript="$(_green)'sgminer$curr.in'$(_blue)"
+nscript="$(_green)'sgminer$next.in'$(_blue)"
+#Function to prompt to reboot.
+_rebooty () {
+	_blue
+	printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' = &&
+	echo "==> $(_bold)$(_white)You need to reboot before continuing.
+$(_tset)$(_blue)==> $(_bold)$(_white)Reboot and then run $nscript.
+$(_tset)$(_blue)==> $(_bold)$(_white)Reboot now? [y/N]
+$(_tset)$(_blue)==> -----------------------------------------------------------"
+	read -p "==> " reboot
+		case $reboot in
+			y|Y)
+				echo "$(_bold)$(_white)Rebooting now..."
+				sudo reboot
+				;;
+			*)
+				echo "$(_bold)$(_white)Reboot before running $nscript."
+				;;
+		esac
+	_tset
+}
+#Function to echo [message] in blue.
+_echecho () {
+	_blue
+	printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' =
+	echo -e "$1..."
+	printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' -
+	_tset
+}
+##Function to show ascii splash image in blue.
+_darkcoinascii () {
+	echo -e "\e[0;34m$1"
+	sleep 0.1
+}
+
+####################Start script.####################
+#Print Darkcoin ascii.
+#_darkcoinascii '    \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
+#_darkcoinascii '      \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
+#_darkcoinascii '        \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
+#_darkcoinascii '          \\\\\\\\\\\\\\\\\\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
+#_darkcoinascii '\\\\\\\\\\\\\\\\\\   \\\\\\\\\\\\\\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
+#_darkcoinascii '  \\\\\\\\\\\\\\\\\\   \\\\\\\\\\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
+#_darkcoinascii '    \\\\\\\\\\\\\\\\\\   \\\\\\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
+#_darkcoinascii '      \\\\\\\\\\\\\\\\\\   \\\\\\\\\\                                  \\\\\\\\\\\\\\\\'
+#_darkcoinascii '        \\\\\\\\\\\\\\\\\\   \\\\\\                                  \\\\\\\\\\\\\\\\'
+#_darkcoinascii '          \\\\\\\\\\\\\\\\\\   \\                                  \\\\\\\\\\\\\\\\'
+#_darkcoinascii '            \\\\\\\\\\\\\\\\\\                                    \\\\\\\\\\\\\\\\'
+#_darkcoinascii '              \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
+#_darkcoinascii '                \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
+#_darkcoinascii '                  \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
+
+_echecho "Starting script ${cscript}"
+
+#Download catalyst driver from AMD website.
+_echecho "Downloading AMD driver packages"
+_blue
+cd ~/Downloads
+if [[ ! -e driver.zip ]] ; then
+	curl -o driver.zip http://www2.ati.com/drivers/linux/amd-catalyst-14-9-linux-x86-x86-64.zip --referer http://support.amd.com/en-us/kb-articles/Pages/Catalyst-Linux-Installer-Notes.aspx
+fi
+
+#Unpack the downloaded driver.
+_echecho "Unpacking driver installation application"
+_blue
+unzip driver.zip
+cd fglr*
+chmod a+x *.run
+
+#Prepare to run the catalyst installation application.
+#_echecho "Launching installation application"
+#Provide instructions for the installation application.
+#_red
+echo '****************************** READ THIS ***********************************'
+_tset
+_blue
+echo "-Before you hit [ENTER] to continue, read the 7 steps below. They'll tell you what you're supposed to do."
+printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' -
+echo "-If errors occur when the application launches, run 'sudo gedit /usr/share/ati/fglrx-install.log' and then follow the instructions on that document. It'll tell you to install some dependencies/packages ('sudo apt-get install ...'"
+printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' -
+read -p "-If there are NOT any errors, you'll see a a screen with the two options 'Install Driver 14.20...'' or 'Generate Distribution Specific Driver Package'.
+1-First, choose $(_green)'Generate Distribution Specific Driver Package'$(_blue) and click $(_green)'Continue'$(_blue).
+2-Next, choose $(_green)'I agree'$(_blue) (if you agree).
+3-Next, scroll down and choose $(_green)'Build package for detected OS: Ubuntu/trusty'$(_blue), then click $(_green)'Continue'$(_blue).
+4-Next, it'll look like it has crashed. It actually IS running; it just takes $(_bold)forever$(_tset)$(_blue). Seriously, forever--like up to 15 minutes.
+5-Once it's FINALLY done, click $(_green)'Exit'$(_blue) to close.
+6-$(_bold)$(_red)***IMPORTANT!***$(_tset)$(_blue) Next, something will pop up. DO NOT CHOOSE $(_red)'YES.'$(_blue) CHOOSE $(_green)'NO'$(_blue). (If you accidentally hit 'yes', it shouldn't be a big deal though. Just keep going.)
+7-Finally, this script will take over for the rest of the installation.
+-You're ready to press [ENTER]. Once the application launches, just scroll back up a bit in Terminal to reread these instructions.
+$(_red)^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ READ THIS ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^$(_blue)
+Press [ENTER] to continue $(_red)(after reading everything above): " a
+_tset
+#Run the catalyst installation application.
+sudo sh *.run
+
+#Install the .deb file that the installation application has just generated.
+_echecho "Installing AMD Catalyst 14.20 beta driver"
+sudo gdebi *.deb
+
+#Make the system recognize the new driver.
+_echecho "Finalizing driver installation"
+sudo aptitude update
+sudo aptitude upgrade -y
+sudo aticonfig --adapter=all --initial
+sudo aptitude install -yr boinc-amd-opencl opencl-headers mesa-utils libglu1-mesa libgl1-mesa-glx libgl1-mesa-dri
+
+#Prompt to reboot.
+_rebooty
